@@ -6,7 +6,7 @@
 
 
 <VBox spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="dci.j24e1.group1.battleships.BattleFieldsController">
+      fx:controller="dci.j24e1.group1.battleshipvscomputer.BattleFieldsController">
 
     <VBox fx:id="computerBox" alignment="CENTER" >
         <Label fx:id="counterLabel" text="You have 100 shots"/>
