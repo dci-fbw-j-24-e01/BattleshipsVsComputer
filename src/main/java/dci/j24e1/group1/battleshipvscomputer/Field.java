@@ -18,10 +18,9 @@ public class Field {
     private VBox vbox;
     private ArrayList<Ship> hittedShips = new ArrayList<>();
     private int points = 0;
-    private int counter = 100;
-//    private int lost = 100;
+    private int counter = 2;
 
-    public Field(VBox vbox, Ship[][] ships, Label counterLabel) {
+    public Field(VBox vbox, Ship[][] ships, Label counterLabel, Button startButton, Button randomButton) {
         this.vbox = vbox;
         this.ships = ships;
         this.counterLabel = counterLabel;
@@ -73,10 +72,8 @@ public class Field {
 
                         if (event.getSource() == button) {
                             counter -= 1;
-                            counterLabel.setText("You have   " + counter + " shots left");
                             if (counter == 0 && points < 50) {
                                 blockAllButtons();
-                                counterLabel.setText("You looser");
                             }
 
                             lost();
@@ -113,7 +110,6 @@ public class Field {
     private void lost(){
         if (counter > 0 && points == 50) {
             blockAllButtons();
-            counterLabel.setText("You WON!!!");
         }
     }
 }
