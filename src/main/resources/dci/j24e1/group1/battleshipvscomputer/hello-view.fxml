@@ -5,22 +5,24 @@
 <?import javafx.scene.layout.VBox?>
 
 
+<?import javafx.scene.control.Button?>
 <VBox spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="dci.j24e1.group1.battleshipvscomputer.BattleFieldsController">
 
-    <VBox fx:id="computerBox" alignment="CENTER" >
-        <Label fx:id="counterLabel" text="You have 100 shots"/>
-        <Label fx:id="messageText">
+    <Label fx:id="topLabel" text="Battleship"/>
 
-        </Label>
+    <Button fx:id="startButton" text="Start" onAction="#start"/>
+    <Button fx:id="randomButton" text="Random" onAction="#random"/>
+
+    <VBox fx:id="computerBox" alignment="CENTER" >
 
     </VBox>
 
     <VBox fx:id="userBox">
-
 
     </VBox>
 
 
 
 </VBox>
+

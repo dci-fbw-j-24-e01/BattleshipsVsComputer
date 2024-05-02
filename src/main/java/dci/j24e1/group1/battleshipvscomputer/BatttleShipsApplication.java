@@ -11,7 +11,7 @@ public class BatttleShipsApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(BatttleShipsApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 680, 680);
+        Scene scene = new Scene(fxmlLoader.load(), 580, 780);
         stage.setScene(scene);
         stage.show();
 
