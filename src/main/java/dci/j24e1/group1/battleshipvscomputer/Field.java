@@ -17,10 +17,7 @@ public class Field {
     private Button[][] buttons = new Button[10][10];
     private VBox vbox;
     private ArrayList<Ship> hittedShips = new ArrayList<>();
-    private int points = 0;
-    private int counter = 100;
     private boolean isUser;
-//    private int lost = 100;
 
     public Field(VBox vbox, Ship[][] ships, boolean isUser, Label label) {
         this.vbox = vbox;

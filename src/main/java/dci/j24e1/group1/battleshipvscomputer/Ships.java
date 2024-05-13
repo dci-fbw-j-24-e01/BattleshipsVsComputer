@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Ships {
-    private final int fieldSize = 10;
+    private final int FIELD_SIZE = 10;
+    private final int MAX_CELL_COUNT = 4;
+    private final int MIN_CELL_COUNT = 1;
     private Ship[][] ships;
 
     public Ships() {
-        firstFill();
-        randomFieldFill();
+        fillFieldRandomly();
     }
 
     public Ship[][] getShips() {
@@ -17,7 +18,7 @@ public class Ships {
     }
 
     private void firstFill() {
-        ships = new Ship[fieldSize][fieldSize];
+        ships = new Ship[FIELD_SIZE][FIELD_SIZE];
         for (int i = 0; i < ships.length; i++) {
             for (int j = 0; j < ships[i].length; j++) {
                 ships[i][j] = new Ship(9, i, j);
@@ -25,10 +26,10 @@ public class Ships {
         }
     }
 
-    private void randomFieldFill() {
-
-        for (int i = 4; i > 0; i--) {
-            for (int j = 1; j <= 5 - i; j++) {
+    private void fillFieldRandomly() {
+        firstFill();
+        for (int i = MAX_CELL_COUNT; i > 0; i--) {
+            for (int j = MIN_CELL_COUNT; j <= MAX_CELL_COUNT - i + 1; j++) {
                 createShip(i, j);
             }
         }
@@ -36,8 +37,8 @@ public class Ships {
     }
 
     private void finishFill() {
-        for (int i = 0; i < fieldSize; i++) {
-            for (int j = 0; j < fieldSize; j++) {
+        for (int i = 0; i < FIELD_SIZE; i++) {
+            for (int j = 0; j < FIELD_SIZE; j++) {
                 if(ships[i][j].getId() == 9) {
                     ships[i][j].setId(0);
                 }
@@ -48,8 +49,8 @@ public class Ships {
     private void createShip(int length, int number) {
         Random random = new Random();
         while (true) {
-            int x = random.nextInt(0, fieldSize);
-            int y = random.nextInt(0, fieldSize);
+            int x = random.nextInt(0, FIELD_SIZE);
+            int y = random.nextInt(0, FIELD_SIZE);
             if (createShipField(length, number, x, y)) {
                 break;
             }
@@ -61,7 +62,7 @@ public class Ships {
         ArrayList<Ship> Ships = new ArrayList<>();
         int state = random.nextInt(1,5);
         if (state == 1) {
-            if (x + length < fieldSize) {
+            if (x + length < FIELD_SIZE) {
                 for (int i = 0; i < length; i++) {
                     if (ships[x + i][y].getId() != 9) {
                         return false;
@@ -70,7 +71,7 @@ public class Ships {
                 }
             }
         } else if (state == 2) {
-            if (y + length < fieldSize) {
+            if (y + length < FIELD_SIZE) {
                 for (int i = 0; i < length; i++) {
                     if (ships[x][y + i].getId() != 9) {
                         return false;
