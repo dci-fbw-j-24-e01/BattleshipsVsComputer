@@ -2,8 +2,8 @@ package dci.j24e1.group1.battleshipvscomputer;
 
 public class Ship {
     private int id;
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public int getId() {
         return id;

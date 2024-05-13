@@ -1,8 +1,6 @@
 package dci.j24e1.group1.battleshipvscomputer;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class Ships {
