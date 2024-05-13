@@ -1,12 +1,12 @@
 package dci.j24e1.group1.battleshipvscomputer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class Ships {
     private final int FIELD_SIZE = 10;
-    private final int MAX_CELL_COUNT = 4;
-    private final int MIN_CELL_COUNT = 1;
     private Ship[][] ships;
 
     public Ships() {
@@ -28,8 +28,10 @@ public class Ships {
 
     private void fillFieldRandomly() {
         firstFill();
-        for (int i = MAX_CELL_COUNT; i > 0; i--) {
-            for (int j = MIN_CELL_COUNT; j <= MAX_CELL_COUNT - i + 1; j++) {
+        int maxCellCount= 4;
+        int minCellCount = 1;
+        for (int i = maxCellCount; i > 0; i--) {
+            for (int j = minCellCount; j <= maxCellCount - i + 1; j++) {
                 createShip(i, j);
             }
         }
@@ -39,91 +41,100 @@ public class Ships {
     private void finishFill() {
         for (int i = 0; i < FIELD_SIZE; i++) {
             for (int j = 0; j < FIELD_SIZE; j++) {
-                if(ships[i][j].getId() == 9) {
+                if (ships[i][j].getId() == 9) {
                     ships[i][j].setId(0);
                 }
             }
         }
     }
 
-    private void createShip(int length, int number) {
+    private void createShip(int length, int id) {
         Random random = new Random();
         while (true) {
             int x = random.nextInt(0, FIELD_SIZE);
             int y = random.nextInt(0, FIELD_SIZE);
-            if (createShipField(length, number, x, y)) {
+            ArrayList<Ship> possibleCoordinates = getPossibleCoordinates(x, y, length, id);
+            if (possibleCoordinates != null) {
+                ArrayList<Ship> coordinates = getFinalShipCoordinates(possibleCoordinates, length);
+                addShipsOnField(coordinates);
+                fillAroundShip(coordinates);
                 break;
             }
         }
     }
 
-    private boolean createShipField(int length,int number, int x, int y) {
+    private ArrayList<Ship> getPossibleCoordinates(int x, int y, int length, int id) {
         Random random = new Random();
-        ArrayList<Ship> Ships = new ArrayList<>();
-        int state = random.nextInt(1,5);
-        if (state == 1) {
-            if (x + length < FIELD_SIZE) {
-                for (int i = 0; i < length; i++) {
-                    if (ships[x + i][y].getId() != 9) {
-                        return false;
-                    }
-                    Ships.add(ships[x + i][y]);
+        boolean isHorizontal = random.nextBoolean();
+        ArrayList<Ship> possibleCoordinates = new ArrayList<>();
+        int start, finish;
+        int newID = length * 10 + id;
+        if (isHorizontal) {
+            start = y - length + 1;
+            finish = y + length - 1;
+            for (int i = start; i <= finish; i++) {
+                if (i < 0 || i >= FIELD_SIZE) {
+                    continue;
                 }
-            }
-        } else if (state == 2) {
-            if (y + length < FIELD_SIZE) {
-                for (int i = 0; i < length; i++) {
-                    if (ships[x][y + i].getId() != 9) {
-                        return false;
-                    }
-                    Ships.add(ships[x][y + i]);
-                }
-            }
-        } else if(state == 3){
-            if (x - length >= 0) {
-                for (int i = 0; i < length; i++) {
-                    if (ships[x - i][y].getId() != 9) {
-                        return false;
-                    }
-                    Ships.add(ships[x - i][y]);
-                }
-            }
-        } else {
-            if (y - length >= 0) {
-                for (int i = 0; i < length; i++) {
-                    if (ships[x][y - i].getId() != 9) {
-                        return false;
-                    }
-                    Ships.add(ships[x][y - i]);
+                if (ships[x][i].getId() == 9) {
+                    possibleCoordinates.add(new Ship(newID, x, i));
                 }
             }
         }
-        if (Ships.isEmpty()) {
-            return false;
+        if (possibleCoordinates.isEmpty() || possibleCoordinates.size() < length) {
+            possibleCoordinates = new ArrayList<>();
+            start = x - length + 1;
+            finish = x + length - 1;
+            for (int i = start; i <= finish; i++) {
+                if (i < 0 || i >= FIELD_SIZE) {
+                    continue;
+                }
+                if (ships[i][y].getId() == 9) {
+                    possibleCoordinates.add(new Ship(newID, i, y));
+                }
+            }
         }
-        addShipsInField(Ships, length, number);
-        fillAroundShip(Ships);
-        return true;
+        if (possibleCoordinates.size() < length) {
+            return null;
+        }
+        return possibleCoordinates;
     }
 
-    private void addShipsInField(ArrayList<Ship> Ships, int length, int number) {
-        for (int i = 0; i < length; i++) {
-            ships[Ships.get(i).getX()][Ships.get(i).getY()].setId(length * 10 + number);
+    private ArrayList<Ship> getFinalShipCoordinates(ArrayList<Ship> possibleCoordinates, int length) {
+        ArrayList<Ship> coordinates = new ArrayList<>();
+        for (int i = 0; i <= possibleCoordinates.size() - length; i++) {
+            Random random = new Random();
+            boolean isNext = random.nextBoolean();
+            if (possibleCoordinates.size() - i == length || !isNext) {
+                for (int j = 0; j < length; j++) {
+                    coordinates.add(possibleCoordinates.get(j));
+                }
+                break;
+            }
+        }
+        return coordinates;
+    }
+
+    private void addShipsOnField(ArrayList<Ship> finishedShip) {
+        for (Ship ship : finishedShip) {
+            int x = ship.getX();
+            int y = ship.getY();
+            ships[x][y] = ship;
         }
     }
 
-    private void fillAroundShip(ArrayList<Ship> Ships) {
-        ArrayList<Ship> ShipsAroundShip = getShipsAroundShip(Ships, this.getShips());
-        for (Ship Ship : ShipsAroundShip) {
-            ships[Ship.getX()][Ship.getY()].setId(0);
+    private void fillAroundShip(ArrayList<Ship> shipCoordinates) {
+        ArrayList<Ship> coordinatesAroundShip = getCoordinatesAroundShip(shipCoordinates, this.getShips());
+        for (Ship ship : coordinatesAroundShip) {
+            ships[ship.getX()][ship.getY()].setId(0);
         }
     }
 
-    public static ArrayList<Ship> getShipsAroundShip(ArrayList<Ship> shipShips, Ship[][] currentShips) {
-        ArrayList<Ship> newShips = new ArrayList<>();
-        for (Ship Ship : shipShips) {
-            int x = Ship.getX();
-            int y = Ship.getY();
+    public static ArrayList<Ship> getCoordinatesAroundShip(ArrayList<Ship> shipCoordinates, Ship[][] currentShips) {
+        ArrayList<Ship> coordinates = new ArrayList<>();
+        for (Ship ship : shipCoordinates) {
+            int x = ship.getX();
+            int y = ship.getY();
             int xStart = x - 1;
             int xFinish = x + 1;
             int yStart = y - 1;
@@ -141,11 +152,11 @@ public class Ships {
             for (int i = xStart; i <= xFinish; i++) {
                 for (int j = yStart; j <= yFinish; j++) {
                     if (currentShips[i][j].getId() == 9 || currentShips[i][j].getId() == 0) {
-                        newShips.add(new Ship(i, j));
+                        coordinates.add(new Ship(i, j));
                     }
                 }
             }
         }
-        return newShips;
+        return coordinates;
     }
 }

@@ -63,7 +63,7 @@ public class GameAction {
             hittedShips.add(ships[x][y]);
             ArrayList<Ship> hittedShip = isDead(ships[x][y]);
             if (hittedShip != null) {
-                ArrayList<Ship> waterAroundDeadShip = Ships.getShipsAroundShip(hittedShip, ships);
+                ArrayList<Ship> waterAroundDeadShip = Ships.getCoordinatesAroundShip(hittedShip, ships);
                 for (Ship Ship : waterAroundDeadShip) {
                     buttons[Ship.getX()][Ship.getY()].setStyle("-fx-background-color: #81D8D0");
                     buttons[Ship.getX()][Ship.getY()].setDisable(true);
@@ -95,7 +95,7 @@ public class GameAction {
             hittedShips.add(ships[x][y]);
             ArrayList<Ship> hittedShip = isDead(ships[x][y]);
             if (hittedShip != null) {
-                ArrayList<Ship> waterAroundDeadShip = Ships.getShipsAroundShip(hittedShip, ships);
+                ArrayList<Ship> waterAroundDeadShip = Ships.getCoordinatesAroundShip(hittedShip, ships);
                 computerHits.addAll(waterAroundDeadShip);
                 for (Ship Ship : waterAroundDeadShip) {
                     buttons[Ship.getX()][Ship.getY()].setStyle("-fx-background-color: #81D8D0");
